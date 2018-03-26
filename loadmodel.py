@@ -19,31 +19,9 @@ import random
 import tensorflow as tf
 from pre import create_inception_embedding
 from model import getmodel
-from loadmodel import getmodelback
-import constants
-
-def evaluate(model):
-	#Make predictions on validation images
-	color_me = []
-	for filename in os.listdir(constants.TEST_DIR):
-	    color_me.append(img_to_array(load_img(os.path.join(constants.TEST_DIR,filename))))
-	color_me = np.array(color_me, dtype=float)
-	color_me_embed = create_inception_embedding(color_me)
-	color_me = rgb2lab(1.0/255*color_me)[:,:,:,0]
-	color_me = color_me.reshape(color_me.shape+(1,))
 
 
-	# Test model
-	output = model.predict([color_me, color_me_embed])
-	output = output * 128
-
-	# Output colorizations
-	for i in range(len(output)):
-	    cur = np.zeros((256, 256, 3))
-	    cur[:,:,0] = color_me[i][:,:,0]
-	    cur[:,:,1:] = output[i]
-	    imsave(os.path.join(constants.OUTPUT_DIR,str(i)+".jpg"), lab2rgb(cur))
-
-
-model = getmodelback(constants.JSON_FILE,constants.H5_FILE)
-evaluate(model)
+def getmodelback(jsonfile,h5file):
+	model=model.from_json(jsonfile)
+	model.load_weights(h5file)
+	return model

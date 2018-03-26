@@ -1,3 +1,23 @@
+import keras
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
+from keras.preprocessing import image
+from keras.engine import Layer
+from keras.applications.inception_resnet_v2 import preprocess_input
+from keras.layers import Conv2D, UpSampling2D, InputLayer, Conv2DTranspose, Input, Reshape, merge, concatenate, Activation, Dense, Dropout, Flatten
+from keras.layers.normalization import BatchNormalization
+from keras.callbacks import TensorBoard 
+from keras.models import Sequential, Model
+from keras.layers.core import RepeatVector, Permute
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
+from keras.callbacks import ModelCheckpoint
+from skimage.transform import resize
+from skimage.io import imsave
+import numpy as np
+import os
+import random
+import tensorflow as tf
+import constants
 
 def conv_stack(data, filters, s):
         output = Conv2D(filters, (3, 3), strides=s, activation='relu', padding='same')(data)
@@ -7,7 +27,7 @@ def conv_stack(data, filters, s):
 
 
 def getmodel():
-	# shape: A shape tuple (integer), not including the batch size. For instance, shape=(32,) indicates that the expected input will be batches of 32-dimensional vectors
+	# 	
 	embed_input = Input(shape=(1000,))
 
 
@@ -40,4 +60,4 @@ def getmodel():
 
 	model = Model(inputs=[encoder_input, embed_input], outputs=decoder_output)
 	return model
-	
+
