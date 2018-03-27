@@ -87,6 +87,12 @@ checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_weights_o
 callbacks_list = [checkpoint]
 model.compile(optimizer='adam', loss='mse')
 print("model fit generator called ...")
+
+cc=0
+for x in image_a_b_gen(batch_size):
+    cc++
+print("cc final is ::",cc)
+
 model.fit_generator(image_a_b_gen(batch_size), epochs=constants.TRAIN_EPOCHS, steps_per_epoch=1, callbacks=callbacks_list, verbose=1)
 
 
