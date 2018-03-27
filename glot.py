@@ -39,45 +39,23 @@ datagen = ImageDataGenerator(
 #Generate training data
 batch_size = constants.BATCH_SIZE
 
-def image_a_b_gen(batch_size):
-    X = []
-    c=0;
-    for filename in os.listdir(constants.INPUT_DIR):
-        X.append(img_to_array(load_img(os.path.join(constants.INPUT_DIR,filename))))
-        print("Read File :: ",os.path.join(constants.INPUT_DIR,filename))
-        c+=1
-        if c>=batch_size:
-            print("Another batch complete!")
-            c=0
-            X = np.array(X, dtype=float)
-            Xtrain = 1.0/255*X
-            for batch in datagen.flow(Xtrain, batch_size=batch_size):
-                grayscaled_rgb = gray2rgb(rgb2gray(batch))
-                embed = create_inception_embedding(grayscaled_rgb)
-                lab_batch = rgb2lab(batch)
-                X_batch = lab_batch[:,:,:,0]
-                X_batch = X_batch.reshape(X_batch.shape+(1,))
-                Y_batch = lab_batch[:,:,:,1:] / 128
-                print("X_batch :: ",X_batch.shape)
-                emb = create_inception_embedding(grayscaled_rgb)
-                print("emb.shape :: ",emb.shape)
-                print("dtypes :: ",X_batch.dtype,emb.dtype)
-                yield ([X_batch, emb], Y_batch)
-            X=[]
-    # X = np.array(X, dtype=float)
-    # if (X.shape[0]>0):
-    #     print("Processing last partial batch...!")
-    #     X = np.array(X, dtype=float)
-    #     Xtrain = 1.0/255*X
-    #     for batch in datagen.flow(Xtrain, batch_size=batch_size):
-    #         grayscaled_rgb = gray2rgb(rgb2gray(batch))
-    #         embed = create_inception_embedding(grayscaled_rgb)
-    #         lab_batch = rgb2lab(batch)
-    #         X_batch = lab_batch[:,:,:,0]
-    #         X_batch = X_batch.reshape(X_batch.shape+(1,))
-    #         Y_batch = lab_batch[:,:,:,1:] / 128
-    #         yield ([X_batch, create_inception_embedding(grayscaled_rgb)], Y_batch)
 
+# Get images
+X = []
+for filename in os.listdir('/data/images/Train/'):
+    X.append(img_to_array(load_img('/data/images/Train/'+filename)))
+X = np.array(X, dtype=float)
+Xtrain = 1.0/255*X
+
+def image_a_b_gen(batch_size):
+    for batch in datagen.flow(Xtrain, batch_size=batch_size):
+        grayscaled_rgb = gray2rgb(rgb2gray(batch))
+        embed = create_inception_embedding(grayscaled_rgb)
+        lab_batch = rgb2lab(batch)
+        X_batch = lab_batch[:,:,:,0]
+        X_batch = X_batch.reshape(X_batch.shape+(1,))
+        Y_batch = lab_batch[:,:,:,1:] / 128
+        yield ([X_batch, create_inception_embedding(grayscaled_rgb)], Y_batch)
 
 print("Training the model now...")
 
