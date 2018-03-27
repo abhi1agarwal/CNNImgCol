@@ -20,8 +20,8 @@ import tensorflow as tf
 
 # Get images
 X = []
-for filename in os.listdir('/data/images/Train/'):
-    X.append(img_to_array(load_img('/data/images/Train/'+filename)))
+for filename in os.listdir(constants.INPUT_DIR):
+    X.append(img_to_array(load_img(constants.INPUT_DIR+filename)))
 X = np.array(X, dtype=float)
 Xtrain = 1.0/255*X
 
@@ -113,8 +113,8 @@ model.save_weights("color_tensorflow_end.h5")
 
 #Make predictions on validation images
 color_me = []
-for filename in os.listdir('/data/images/Test/'):
-    color_me.append(img_to_array(load_img('/data/images/Test/'+filename)))
+for filename in os.listdir(constants.TEST_DIR):
+    color_me.append(img_to_array(load_img(constants.TEST_DIR+filename)))
 color_me = np.array(color_me, dtype=float)
 color_me_embed = create_inception_embedding(color_me)
 color_me = rgb2lab(1.0/255*color_me)[:,:,:,0]
