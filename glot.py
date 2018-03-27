@@ -90,9 +90,13 @@ print("model fit generator called ...")
 
 cc=0
 for x in image_a_b_gen(batch_size):
-    cc++
+    cc=cc+1
+    print("cc has changed to ::",cc)
+    print("\n\n")
+
 print("cc final is ::",cc)
 
+print("\n\nNow running model generator ...\n\n\n")
 model.fit_generator(image_a_b_gen(batch_size), epochs=constants.TRAIN_EPOCHS, steps_per_epoch=1, callbacks=callbacks_list, verbose=1)
 
 
