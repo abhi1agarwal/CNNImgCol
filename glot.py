@@ -44,6 +44,7 @@ batch_size = constants.BATCH_SIZE
 X = []
 for filename in os.listdir(constants.INPUT_DIR):
     X.append(img_to_array(load_img(os.path.join(constants.INPUT_DIR,filename))))
+    print("considered file ",filename)
 X = np.array(X, dtype=float)
 Xtrain = 1.0/255*X
 
