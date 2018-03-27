@@ -42,8 +42,8 @@ batch_size = constants.BATCH_SIZE
 
 # Get images
 X = []
-for filename in os.listdir('/data/images/Train/'):
-    X.append(img_to_array(load_img('/data/images/Train/'+filename)))
+for filename in os.listdir(constants.INPUT_DIR):
+    X.append(img_to_array(load_img(os.path.join(constants.INPUT_DIR,filename))))
 X = np.array(X, dtype=float)
 Xtrain = 1.0/255*X
 
