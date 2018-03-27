@@ -17,10 +17,11 @@ import numpy as np
 import os
 import random
 import tensorflow as tf
-
+import constants
 # Get images
 X = []
 for filename in os.listdir(constants.INPUT_DIR):
+    print("added image",filename)
     X.append(img_to_array(load_img(constants.INPUT_DIR+filename)))
 X = np.array(X, dtype=float)
 Xtrain = 1.0/255*X
@@ -86,7 +87,7 @@ datagen = ImageDataGenerator(
         horizontal_flip=True)
 
 #Generate training data
-batch_size = 10
+batch_size = constants.BATCH_SIZE
 
 def image_a_b_gen(batch_size):
     for batch in datagen.flow(Xtrain, batch_size=batch_size):
@@ -103,7 +104,7 @@ filepath="weights-improvement-{epoch:02d}-{loss:.2f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_weights_only=True, period=20)
 callbacks_list = [checkpoint]
 model.compile(optimizer='adam', loss='mse')
-model.fit_generator(image_a_b_gen(batch_size), epochs=5, steps_per_epoch=1, callbacks=callbacks_list, verbose=1)
+model.fit_generator(image_a_b_gen(batch_size), epochs=constants.TRAIN_EPOCHS, steps_per_epoch=1, callbacks=callbacks_list, verbose=1)
 
 # Save model
 model_json = model.to_json()
